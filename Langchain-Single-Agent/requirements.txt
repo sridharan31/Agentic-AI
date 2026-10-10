@@ -1,0 +1,7 @@
+certifi
+langchain==0.1.16
+langchain-community==0.0.32
+langchainhub
+python-dotenv
+requests
+streamlit

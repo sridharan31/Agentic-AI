@@ -1,0 +1,14 @@
+LangGraph-Code/.env
+.env
+
+# Python and notebook artifacts across the workspace
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv*/
+
+# Generated local vector-store and SQLite data
+faiss_db/
+chatbot.db
+chatbot.db-shm
+chatbot.db-wal

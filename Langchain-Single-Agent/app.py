@@ -4,13 +4,8 @@ import streamlit as st
 import certifi
 from dotenv import load_dotenv
 
-from langchain_community.chat_models import ChatOllama
 from langchain.tools import tool
-from langchain.agents import (
-    create_react_agent,
-    AgentExecutor
-)
-from langchain import hub
+from ollama_agent import invoke_ollama_agent
 
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
@@ -87,17 +82,6 @@ def get_weather_data(city: str) -> str:
 # LLM
 # ==========================================
 
-llm = ChatOllama(
-    model="llama3.2:latest",
-    temperature=0
-)
-
-# ==========================================
-# PROMPT
-# ==========================================
-
-prompt = hub.pull("hwchase17/react")
-
 # ==========================================
 # TOOLS
 # ==========================================
@@ -106,27 +90,6 @@ tools = [
     search_tool,
     get_weather_data
 ]
-
-# ==========================================
-# CREATE AGENT
-# ==========================================
-
-agent = create_react_agent(
-    llm=llm,
-    tools=tools,
-    prompt=prompt
-)
-
-# ==========================================
-# EXECUTOR
-# ==========================================
-
-agent_executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    verbose=True,
-    handle_parsing_errors=True
-)
 
 # ==========================================
 # UI INPUT
@@ -148,14 +111,12 @@ if st.button("Run Agent"):
         with st.spinner("Agent is thinking..."):
 
             try:
-                response = agent_executor.invoke({
-                    "input": user_query
-                })
+                response = invoke_ollama_agent(user_query, tools)
 
                 st.success("Response Generated")
 
                 st.markdown("## Final Response")
-                st.write(response["output"])
+                st.write(response)
 
             except Exception as e:
                 st.error(f"Error: {str(e)}")

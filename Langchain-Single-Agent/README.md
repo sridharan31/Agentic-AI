@@ -22,6 +22,7 @@ This repository is organized as a small Python agent project:
 
 - `app.py` - Primary application script for launching the agent logic.
 - `main.py` - Secondary entrypoint, typically used for testing or demo execution.
+- `ollama_agent.py` - Shared Ollama tool-calling workflow used by the app, CLI, and notebook.
 - `requirements.txt` - Python dependencies required to run the project.
 - `.env` - Local optional API keys for web search and weather.
 - `research/agent_demo.ipynb` - Jupyter notebook for experimentation and development notes.
@@ -51,6 +52,9 @@ If `.venv311` already exists, install and run Streamlit through that interpreter
 & ".\.venv311\Scripts\python.exe" -m pip install -r requirements.txt
 & ".\.venv311\Scripts\python.exe" -m streamlit run app.py
 ```
+
+For notebook kernel selection and troubleshooting, see
+[Notebook Kernel Troubleshooting](./NOTEBOOK_KERNEL_TROUBLESHOOTING.md).
 
 To create the environment from scratch:
 
@@ -90,6 +94,11 @@ WEATHERSTACK_API_KEY="your-weatherstack-api-key"
 
 Without a Tavily key, the agent runs without web search. Ollama must be running locally
 at its default endpoint (`http://localhost:11434`).
+The agent uses Ollama's native tool-call API, avoiding the text-format parser required by
+the older LangChain ReAct prompt. Set `OLLAMA_BASE_URL` only if Ollama is running at a
+non-default endpoint. The app exposes weather tools for weather questions and web-search
+tools for explicit or recent-information searches; unrelated questions are sent as plain
+chat so the local model does not make spurious tool calls.
 
 ### Run the Project
 

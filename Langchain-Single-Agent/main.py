@@ -6,18 +6,10 @@ import requests
 
 from dotenv import load_dotenv
 
-from langchain_community.chat_models import ChatOllama
 from langchain.tools import tool
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
-
-
-from langchain.agents import (
-    create_react_agent,
-    AgentExecutor
-)
-
-from langchain import hub
+from ollama_agent import invoke_ollama_agent
 
 # ==========================================
 # LOAD ENV VARIABLES
@@ -74,21 +66,6 @@ def get_weather_data(city: str) -> str:
     )
 
 # ==========================================
-# LLM
-# ==========================================
-
-llm = ChatOllama(
-    model="llama3.2:latest",
-    temperature=0
-)
-
-# ==========================================
-# PROMPT
-# ==========================================
-
-prompt = hub.pull("hwchase17/react")
-
-# ==========================================
 # TOOLS
 # ==========================================
 
@@ -98,38 +75,19 @@ tools = [
 ]
 
 # ==========================================
-# CREATE AGENT
-# ==========================================
-
-agent = create_react_agent(
-    llm=llm,
-    tools=tools,
-    prompt=prompt
-)
-
-# ==========================================
-# EXECUTOR
-# ==========================================
-
-agent_executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    verbose=True
-)
-
-# ==========================================
 # RUN
 # ==========================================
 
-response = agent_executor.invoke({
-    "input": (
-        "Find the capital of India"
+response = invoke_ollama_agent(
+    (
+        "Find the capital of India "
         "and then find its current weather."
-    )
-})
+    ),
+    tools,
+)
 
 print("\n========================")
 print("FINAL OUTPUT")
 print("========================\n")
 
-print(response["output"])
+print(response)

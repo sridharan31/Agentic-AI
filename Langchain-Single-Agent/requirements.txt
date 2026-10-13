@@ -1,7 +1,8 @@
 certifi
 langchain==0.1.16
 langchain-community==0.0.32
-langchainhub
+ipykernel
+packaging<24
 python-dotenv
 requests
 streamlit

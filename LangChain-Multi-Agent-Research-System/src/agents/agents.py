@@ -4,11 +4,26 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from src.tools.tools import web_search, scrape_url
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
 # Model Initialization
-llm = ChatOpenAI(model = "gpt-4o-mini",temperature=0)
+# Meta Model API (dev.meta.ai) is OpenAI-compatible, so ChatOpenAI works with its base_url.
+# Priority: local Ollama (OLLAMA_MODEL) -> Meta (MODEL_API_KEY) -> OpenAI.
+if os.getenv("OLLAMA_MODEL"):
+    from langchain_ollama import ChatOllama
+    # num_ctx raised so the combined search + scraped research fits in the prompt
+    llm = ChatOllama(model=os.getenv("OLLAMA_MODEL"), temperature=0, num_ctx=8192)
+elif os.getenv("MODEL_API_KEY"):
+    llm = ChatOpenAI(
+        model=os.getenv("META_MODEL", "muse-spark-1.3"),
+        base_url="https://api.meta.ai/v1",
+        api_key=os.getenv("MODEL_API_KEY"),
+        temperature=0,
+    )
+else:
+    llm = ChatOpenAI(model = "gpt-4o-mini",temperature=0)
 
 
 # 1st Agent : Search Agent

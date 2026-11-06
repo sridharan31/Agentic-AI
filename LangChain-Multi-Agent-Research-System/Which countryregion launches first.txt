@@ -1,0 +1,6 @@
+Which country/region launches first? Goble 
+Team size and budget for the first 6 months? 1 team
+Is B2B provider mode allowed for any provider, or only vetted/licensed providers? trail 30 days 
+Do you want iOS/Apple TV in phase 1? no
+Product name, if decided? 
+Please share the rest of the master prompt (from Section 6).
